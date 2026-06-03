@@ -309,27 +309,36 @@ def load_reports():
 # --- 関数: AI分析 ---
 def analyze_post(post):
     client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+    position = post['position']
+    other = "子ども" if position == "親" else "親"
     prompt = f"""
     以下の親子関係の悩みを分析し、日本語のJSON形式のみで出力してください。
     前置きや説明文は一切不要です。JSONだけを返してください。
 
-    立場: {post['position']}
+    投稿者の立場: {position}
     テーマ: {post['theme']}
     内容: {post['whatHappened']}
     感情: {post['howFelt']}
     本当はどうしてほしかったか: {post.get('reallyWanted', '未回答')}
     一番つらかった瞬間: {post.get('hardestMoment', '未回答')}
 
+    【重要な指針】
+    このアプリの目的は「{position}」の気持ちをまず受け止め、整理してあげることです。
+    以下の順番で分析してください：
+    1. まず投稿者（{position}）の気持ちを温かく受け止める
+    2. 相手（{other}）の立場・気持ちを想像させる
+    3. 具体的な次の一歩を提案する
+
+    アドバイスはすべて投稿者（{position}）本人に向けて書いてください。
+
     以下のキーを持つJSONを返してください（日本語で回答）。
-    抽象的な一般論ではなく、この投稿の内容に即した具体的なアドバイスを書いてください。
 
     {{
-      "overview": "この状況を2〜3文で具体的に整理する。何が起きて、何がすれ違っているかを明確に",
-      "hidden_feelings": "表面の感情の奥にある本当の気持ちを具体的に。例：承認してほしい、存在を認めてほしいなど",
-      "parent_perspective": "親はなぜそう言ったのか、親の立場からの気持ちと背景を具体的に説明する。子どもへの愛情や不安がどう影響しているかも含める",
-      "child_perspective": "子どもはなぜそう感じたのか、子どもの立場からの気持ちを具体的に説明する。親に何を求めていたかも含める",
-      "how_to_talk": "次に相手に話しかけるときの具体的な言葉や文例。そのまま使えるような表現で",
-      "actionable_hints": ["今すぐできる具体的な行動1", "今すぐできる具体的な行動2", "今すぐできる具体的な行動3"]
+      "your_feelings": "投稿者（{position}）の気持ちをそのまま温かく受け止める言葉。「あなたは〜と感じていたんですね」「それは辛かったですね」のように共感を示す。2〜3文",
+      "hidden_feelings": "投稿者（{position}）の表面の感情の奥にある本当の気持ち。「本当は〜してほしかったのではないでしょうか」のような形で具体的に",
+      "other_perspective": "相手（{other}）はなぜそう言ったのか・そう行動したのかを、相手の立場から想像して説明する。相手を責めるのではなく、背景にある気持ちを伝える",
+      "how_to_talk": "投稿者（{position}）が相手（{other}）に話しかけるときの具体的な言葉や文例。そのまま使えるような自然な表現で",
+      "actionable_hints": ["投稿者（{position}）が今すぐできる具体的な行動1", "投稿者（{position}）が今すぐできる具体的な行動2", "投稿者（{position}）が今すぐできる具体的な行動3"]
     }}
     """
     try:
@@ -1092,22 +1101,27 @@ elif st.session_state.view == "detail":
 
     if st.session_state.analysis_result:
         result = st.session_state.analysis_result
-        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">状況の整理</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("overview","")}</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">本当の気持ち</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
+        # 1. あなたの気持ちを受け止める
+        if result.get("your_feelings"):
+            st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-left:4px solid #E8A87C;border-radius:12px;padding:18px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:8px;">あなたの気持ち</div><div style="font-size:15px;color:#4A2C1A;line-height:1.9;">{result.get("your_feelings","")}</div></div>', unsafe_allow_html=True)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">親はなぜそう言ったのか</div><div style="font-size:13px;color:#3D2B5A;line-height:1.7;">{result.get("parent_perspective","")}</div></div>', unsafe_allow_html=True)
-        with col2:
-            st.markdown(f'<div style="background:#F0FFF5;border:1.5px solid #B8E8CC;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;font-weight:500;color:#2A6B4A;margin-bottom:6px;">子どもはなぜそう感じたのか</div><div style="font-size:13px;color:#1A4A30;line-height:1.7;">{result.get("child_perspective","")}</div></div>', unsafe_allow_html=True)
+        # 2. 本当の気持ち
+        if result.get("hidden_feelings"):
+            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">奥にある本当の気持ち</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
 
+        # 3. 相手の立場
+        if result.get("other_perspective"):
+            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">相手はなぜそうしたのか</div><div style="font-size:14px;color:#3D2B5A;line-height:1.7;">{result.get("other_perspective","")}</div></div>', unsafe_allow_html=True)
+
+        # 4. 次にこう話しかけてみましょう
         if result.get("how_to_talk"):
-            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">次にこう話しかけてみましょう</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{result.get("how_to_talk","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">次にこう話しかけてみましょう</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{result.get("how_to_talk","")}</div></div>', unsafe_allow_html=True)
 
+        # 5. 今すぐできること
         hints = result.get('actionable_hints', [])
         if hints:
             hints_html = ''.join([f'<div style="display:flex;gap:8px;margin-bottom:8px;"><span style="color:#E8A87C;font-weight:500;">·</span><span style="font-size:14px;color:#4A2C1A;line-height:1.7;">{h}</span></div>' for h in hints])
-            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">今すぐできること</div>{hints_html}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:4px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">今すぐできること</div>{hints_html}</div>', unsafe_allow_html=True)
 
         st.markdown('<hr class="divider">', unsafe_allow_html=True)
         st.markdown('<div style="font-size:15px;font-weight:500;color:#3D2B1F;margin-bottom:4px;">AIとさらに話してみる</div>', unsafe_allow_html=True)
