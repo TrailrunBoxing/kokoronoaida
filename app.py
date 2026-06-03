@@ -566,7 +566,65 @@ if "view" not in st.session_state:
 # 画面: はじめに
 # =============================
 if st.session_state.view == "about":
-    st.markdown('<div class="section-header">はじめに・このアプリについて</div>', unsafe_allow_html=True)
+    is_en = st.session_state.get("lang") == "en"
+    if is_en:
+        st.markdown('<div class="section-header">About This App</div>', unsafe_allow_html=True)
+        st.markdown("""
+    <div class="concept-card" style="border-left:4px solid #E8A87C;">
+        <div class="concept-title">What This App Is For</div>
+        <div class="concept-body">
+            This app is a place to share <strong style="color:#3D2B1F;">concerns that both parents and children can understand from each other's perspective</strong>.<br><br>
+            For example: "I can't talk to my child about their future" or "My parents don't understand how I feel" — please share <strong style="color:#3D2B1F;">misunderstandings and communication struggles between parent and child</strong>.<br><br>
+            Topics like financial issues or work stress that children may not relate to are not suited for this app.<br>
+            Try to share <strong style="color:#3D2B1F;">concerns that both sides can imagine from their own perspective</strong>.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">Why This App Was Created</div>
+        <div class="concept-body">
+            The parent-child relationship may be the closest — and the most difficult — relationship in the world.<br><br>
+            You love them, but your feelings don't get through.<br>
+            You want to be understood, but you're not.<br>
+            In these moments of disconnect, unspoken feelings keep building up——<br><br>
+            "Kokoro no Aida" is a place to <strong style="color:#3D2B1F;">put those unspoken feelings into words</strong>.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">Who Is This App For?</div>
+        <div class="concept-body">
+            · Parents who struggle to express their feelings to their children<br>
+            · Children who feel misunderstood by their parents<br>
+            · Anyone who wants to improve their family relationships<br><br>
+            It doesn't matter which side you're on. Both parents and children can use this app from their own perspective.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">How to Use AI</div>
+        <div class="concept-body">
+            The AI in this app is not here to give you answers.<br><br>
+            It receives your words, helps explore hidden feelings, and imagines the other person's perspective——<br>
+            Use it as a "mirror" for that purpose.<br><br>
+            AI is not a counselor. But it can help you sort through feelings you've been holding alone.
+        </div>
+    </div>
+    <div class="concept-card" style="border-left:4px solid #C4A882;">
+        <div class="concept-title">Reading Others' Posts</div>
+        <div class="concept-body">
+            Other people's posts are shown on the home page too.<br>
+            There's a reason for that.<br><br>
+            <strong style="color:#3D2B1F;">Realizing you're not alone</strong><br>
+            Just knowing others share similar struggles can lighten your heart a little.<br><br>
+            <strong style="color:#3D2B1F;">Practice seeing the other side</strong><br>
+            A child reading a parent's post, a parent reading a child's——<br>
+            Encountering feelings from a different perspective deepens understanding.<br><br>
+            <strong style="color:#3D2B1F;">Finding the courage to write</strong><br>
+            Seeing others write honestly may inspire you to do the same.<br><br>
+            If you're concerned about privacy, please use Anonymous mode.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="section-header">はじめに・このアプリについて</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="concept-card" style="border-left:4px solid #E8A87C;">
         <div class="concept-title">このアプリで書いてほしいこと</div>
@@ -626,7 +684,52 @@ if st.session_state.view == "about":
 # 画面: 使い方ガイド
 # =============================
 elif st.session_state.view == "guide":
-    st.markdown('<div class="section-header">使い方ガイド</div>', unsafe_allow_html=True)
+    is_en = st.session_state.get("lang") == "en"
+    if is_en:
+        st.markdown('<div class="section-header">How to Use</div>', unsafe_allow_html=True)
+        st.markdown("""
+    <div class="concept-card">
+        <div class="concept-title">Basic Steps (3 Steps)</div>
+        <div class="step-row"><div class="step-num">1</div><div class="step-text"><strong style="color:#3D2B1F;">Write Your Heart</strong><br>Write what happened (facts) and how you felt (emotions). It's okay if it's not perfect — just write what comes to mind.</div></div>
+        <div class="step-row"><div class="step-num">2</div><div class="step-text"><strong style="color:#3D2B1F;">Reflect with AI</strong><br>AI will analyze your post and return hidden feelings, perspectives from both sides, and hints to improve the relationship.</div></div>
+        <div class="step-row"><div class="step-num">3</div><div class="step-text"><strong style="color:#3D2B1F;">Chat with AI</strong><br>Based on the analysis, you can freely talk with AI. Ask anything you're curious about.</div></div>
+    </div>
+    <div class="concept-card" style="border-left:4px solid #E8A87C;">
+        <div class="concept-title">The Importance of Journaling</div>
+        <div class="concept-body">
+            Worries that stay only in your head tend to grow bigger and bigger.<br>
+            When you're feeling emotional or can't shake a feeling of unease——<br>
+            that's exactly when putting it into words matters most.<br><br>
+            Writing allows you to see your feelings from a slight distance.<br>
+            The realization "Ah, so that's how I was feeling" leads to clarity in your heart.<br><br>
+            It doesn't have to be perfect. It doesn't have to be the right words.<br>
+            Just try starting by writing something down.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">Tips for Writing</div>
+        <div class="concept-body">
+            <strong style="color:#3D2B1F;">Separate facts from feelings</strong><br>
+            Writing "what happened" and "how I felt" separately is the key.<br><br>
+            <strong style="color:#3D2B1F;">Ask yourself: what did I really want?</strong><br>
+            Answering this helps reveal your true needs.<br><br>
+            <strong style="color:#3D2B1F;">Pinpoint the hardest moment</strong><br>
+            Writing specifically about "that one word" or "that one moment" deepens the AI analysis.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">How to Use AI Chat</div>
+        <div class="concept-body">
+            After the AI analysis, you can talk freely with AI.<br><br>
+            <strong style="color:#3D2B1F;">Ask about the other person's feelings</strong>: "What do you think my parent was feeling when they said that?"<br>
+            <strong style="color:#3D2B1F;">Ask how to communicate</strong>: "How should I approach this conversation?"<br>
+            <strong style="color:#3D2B1F;">Think about next steps</strong>: "What do you think I should do first?"<br><br>
+            AI won't judge you. It simply stays by your side and thinks things through together.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="section-header">使い方ガイド</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="concept-card">
         <div class="concept-title">基本の使い方（3ステップ）</div>
@@ -673,7 +776,45 @@ elif st.session_state.view == "guide":
 # 画面: プライバシー
 # =============================
 elif st.session_state.view == "privacy":
-    st.markdown('<div class="section-header">プライバシーについて</div>', unsafe_allow_html=True)
+    is_en = st.session_state.get("lang") == "en"
+    if is_en:
+        st.markdown('<div class="section-header">Privacy</div>', unsafe_allow_html=True)
+        st.markdown("""
+    <div class="concept-card">
+        <div class="concept-title">Information We Collect</div>
+        <div class="concept-body">
+            This app only saves the post content you enter.<br><br>
+            · Post title, body, and emotions<br>
+            · Your chosen position and theme<br>
+            · Your name (only if you choose to enter it)<br>
+            · An anonymous ID to identify your device<br><br>
+            <strong style="color:#3D2B1F;">We do not collect any personal information such as email addresses, phone numbers, or full names.</strong>
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">Where Data Is Stored</div>
+        <div class="concept-body">
+            Post data is stored in Supabase (a US-based cloud service).<br>
+            Data is encrypted and will never be shared with third parties.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">Data Sent to AI</div>
+        <div class="concept-body">
+            When you use the "Reflect with AI" feature, your post content is sent to Groq's AI.<br>
+            This only happens when you press the button.<br>
+            Your content will not be used as AI training data.
+        </div>
+    </div>
+    <div class="concept-card">
+        <div class="concept-title">Deleting Posts</div>
+        <div class="concept-body">
+            You can delete your posts at any time. Deleted posts are permanently removed and cannot be recovered.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="section-header">プライバシーについて</div>', unsafe_allow_html=True)
     st.markdown("""
     <div class="concept-card">
         <div class="concept-title">取得する情報</div>
@@ -713,8 +854,27 @@ elif st.session_state.view == "privacy":
 # 画面: FAQ
 # =============================
 elif st.session_state.view == "faq":
-    st.markdown('<div class="section-header">よくある質問</div>', unsafe_allow_html=True)
-    faqs = [
+    is_en = st.session_state.get("lang") == "en"
+    if is_en:
+        st.markdown('<div class="section-header">FAQ</div>', unsafe_allow_html=True)
+        faqs_en = [
+            ("Can others see my posts?", "Currently, all posts are shown on the home page. Using Anonymous mode hides your name. We recommend posting anonymously if you're concerned about privacy."),
+            ("Will my posts disappear if I close the browser?", "Posts are saved to a database, so they won't disappear when you close the browser. However, 'My Page' is managed by device ID, so it may not show on a different browser or device."),
+            ("Is AI a real counselor?", "AI is not a counselor. It's a tool to help you organize your feelings. For serious concerns, we recommend consulting a professional."),
+            ("Can I edit or delete posts?", "Yes. Use the 'Edit' or 'Delete' buttons on the post card. Deleted posts cannot be recovered."),
+            ("What is Anonymous mode?", "Checking 'Post anonymously' when creating a post will show 'Anonymous' instead of your name."),
+            ("Is it free to use?", "Yes, it's completely free."),
+        ]
+        for q, a in faqs_en:
+            st.markdown(f"""
+            <div class="concept-card" style="margin-bottom:10px;">
+                <div style="font-size:14px;font-weight:500;color:#3D2B1F;margin-bottom:8px;">Q. {q}</div>
+                <div style="font-size:13px;color:#6B5043;line-height:1.7;">A. {a}</div>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="section-header">よくある質問</div>', unsafe_allow_html=True)
+        faqs = [
         ("投稿は他の人に見られますか？", "現在このアプリはトップページにすべての投稿が表示される仕様です。匿名モードを使うと名前は表示されません。気になる方は匿名での投稿をおすすめします。"),
         ("ブラウザを閉じたら投稿は消えますか？", "投稿はデータベースに保存されるため、ブラウザを閉じても消えません。ただし「マイページ」は端末IDで管理しているため、別のブラウザや端末では表示されないことがあります。"),
         ("AIは本物のカウンセラーですか？", "AIはカウンセラーではありません。気持ちの整理を手助けするツールです。深刻な悩みについては、専門家への相談をおすすめします。"),
@@ -1183,21 +1343,27 @@ elif st.session_state.view == "detail":
         lbl_how = "Try Saying This" if is_en else "次にこう話しかけてみましょう"
         lbl_hints = "What You Can Do Now" if is_en else "今すぐできること"
 
+        # 英語モードの場合は分析結果も翻訳
+        def tr(text):
+            if is_en and text:
+                return translate_to_english(text)
+            return text
+
         if result.get("your_feelings"):
-            st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-left:4px solid #E8A87C;border-radius:12px;padding:18px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:8px;">{lbl_your}</div><div style="font-size:15px;color:#4A2C1A;line-height:1.9;">{result.get("your_feelings","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-left:4px solid #E8A87C;border-radius:12px;padding:18px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:8px;">{lbl_your}</div><div style="font-size:15px;color:#4A2C1A;line-height:1.9;">{tr(result.get("your_feelings",""))}</div></div>', unsafe_allow_html=True)
 
         if result.get("hidden_feelings"):
-            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">{lbl_hidden}</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">{lbl_hidden}</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{tr(result.get("hidden_feelings",""))}</div></div>', unsafe_allow_html=True)
 
         if result.get("other_perspective"):
-            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">{lbl_other}</div><div style="font-size:14px;color:#3D2B5A;line-height:1.7;">{result.get("other_perspective","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">{lbl_other}</div><div style="font-size:14px;color:#3D2B5A;line-height:1.7;">{tr(result.get("other_perspective",""))}</div></div>', unsafe_allow_html=True)
 
         if result.get("how_to_talk"):
-            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">{lbl_how}</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{result.get("how_to_talk","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">{lbl_how}</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{tr(result.get("how_to_talk",""))}</div></div>', unsafe_allow_html=True)
 
         hints = result.get('actionable_hints', [])
         if hints:
-            hints_html = ''.join([f'<div style="display:flex;gap:8px;margin-bottom:8px;"><span style="color:#E8A87C;font-weight:500;">·</span><span style="font-size:14px;color:#4A2C1A;line-height:1.7;">{h}</span></div>' for h in hints])
+            hints_html = ''.join([f'<div style="display:flex;gap:8px;margin-bottom:8px;"><span style="color:#E8A87C;font-weight:500;">·</span><span style="font-size:14px;color:#4A2C1A;line-height:1.7;">{tr(h)}</span></div>' for h in hints])
             st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:4px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">{lbl_hints}</div>{hints_html}</div>', unsafe_allow_html=True)
 
         st.markdown('<hr class="divider">', unsafe_allow_html=True)
