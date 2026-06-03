@@ -320,13 +320,16 @@ def analyze_post(post):
     本当はどうしてほしかったか: {post.get('reallyWanted', '未回答')}
     一番つらかった瞬間: {post.get('hardestMoment', '未回答')}
 
-    以下のキーを持つJSONを返してください（日本語で回答）:
+    以下のキーを持つJSONを返してください（日本語で回答）。
+    抽象的な一般論ではなく、この投稿の内容に即した具体的なアドバイスを書いてください。
+
     {{
-      "overview": "この投稿の整理",
-      "hidden_feelings": "表面には見えない奥にある気持ち",
-      "parent_perspective": "親の立場から見た視点とアドバイス",
-      "child_perspective": "子の立場から見た視点とアドバイス",
-      "actionable_hints": ["ヒント1", "ヒント2", "ヒント3"]
+      "overview": "この状況を2〜3文で具体的に整理する。何が起きて、何がすれ違っているかを明確に",
+      "hidden_feelings": "表面の感情の奥にある本当の気持ちを具体的に。例：承認してほしい、存在を認めてほしいなど",
+      "parent_perspective": "親はなぜそう言ったのか、親の立場からの気持ちと背景を具体的に説明する。子どもへの愛情や不安がどう影響しているかも含める",
+      "child_perspective": "子どもはなぜそう感じたのか、子どもの立場からの気持ちを具体的に説明する。親に何を求めていたかも含める",
+      "how_to_talk": "次に相手に話しかけるときの具体的な言葉や文例。そのまま使えるような表現で",
+      "actionable_hints": ["今すぐできる具体的な行動1", "今すぐできる具体的な行動2", "今すぐできる具体的な行動3"]
     }}
     """
     try:
@@ -1089,19 +1092,22 @@ elif st.session_state.view == "detail":
 
     if st.session_state.analysis_result:
         result = st.session_state.analysis_result
-        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">投稿の整理</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("overview","")}</div></div>', unsafe_allow_html=True)
-        st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">見えてくる気持ち</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">状況の整理</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("overview","")}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">本当の気持ち</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
 
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;"><div style="font-size:12px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">親の視点から</div><div style="font-size:13px;color:#3D2B5A;line-height:1.7;">{result.get("parent_perspective","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">親はなぜそう言ったのか</div><div style="font-size:13px;color:#3D2B5A;line-height:1.7;">{result.get("parent_perspective","")}</div></div>', unsafe_allow_html=True)
         with col2:
-            st.markdown(f'<div style="background:#F0FFF5;border:1.5px solid #B8E8CC;border-radius:12px;padding:16px;"><div style="font-size:12px;font-weight:500;color:#2A6B4A;margin-bottom:6px;">子の視点から</div><div style="font-size:13px;color:#1A4A30;line-height:1.7;">{result.get("child_perspective","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#F0FFF5;border:1.5px solid #B8E8CC;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;font-weight:500;color:#2A6B4A;margin-bottom:6px;">子どもはなぜそう感じたのか</div><div style="font-size:13px;color:#1A4A30;line-height:1.7;">{result.get("child_perspective","")}</div></div>', unsafe_allow_html=True)
+
+        if result.get("how_to_talk"):
+            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">次にこう話しかけてみましょう</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{result.get("how_to_talk","")}</div></div>', unsafe_allow_html=True)
 
         hints = result.get('actionable_hints', [])
         if hints:
             hints_html = ''.join([f'<div style="display:flex;gap:8px;margin-bottom:8px;"><span style="color:#E8A87C;font-weight:500;">·</span><span style="font-size:14px;color:#4A2C1A;line-height:1.7;">{h}</span></div>' for h in hints])
-            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">関係をよくするヒント</div>{hints_html}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:10px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">今すぐできること</div>{hints_html}</div>', unsafe_allow_html=True)
 
         st.markdown('<hr class="divider">', unsafe_allow_html=True)
         st.markdown('<div style="font-size:15px;font-weight:500;color:#3D2B1F;margin-bottom:4px;">AIとさらに話してみる</div>', unsafe_allow_html=True)
