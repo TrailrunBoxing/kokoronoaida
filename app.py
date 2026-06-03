@@ -414,15 +414,26 @@ def render_post_card(post):
     import html as html_lib
     safe_title = html_lib.escape(post['title'])
     safe_preview = html_lib.escape(preview)
+    is_en = st.session_state.get("lang") == "en"
+    if is_en:
+        safe_title = translate_to_english(post['title'])
+        safe_preview = translate_to_english(preview)
+        position_label = "Parent" if post["position"] == "親" else "Child"
+        position_badge = f'<span style="background:{badge_bg};color:{badge_color};font-size:11px;padding:3px 12px;border-radius:20px;font-weight:500;white-space:nowrap;">{position_label}</span>'
+    else:
+        safe_preview_text = safe_preview
+
     tags_section = f'<div style="margin-bottom:10px;">{tags_html}</div>' if tags_html else ''
+    display_title = safe_title if is_en else safe_title
+    display_preview = safe_preview if is_en else safe_preview
     return f"""
     <div style="background:{card_bg};border:1.5px solid {card_border};border-left:4px solid {card_left};border-radius:14px;padding:18px;margin-bottom:14px;">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-            <div style="font-family:'Noto Serif JP',Georgia,serif;font-size:15px;font-weight:500;color:#3D2B1F;">{safe_title}{anon_badge}{author_text}</div>
+            <div style="font-family:'Noto Serif JP',Georgia,serif;font-size:15px;font-weight:500;color:#3D2B1F;">{display_title}{anon_badge}{author_text}</div>
             {position_badge}
         </div>
         <div style="font-size:12px;color:#B07050;margin-bottom:8px;">{post['theme']} &nbsp;·&nbsp; {post['createdAt']}</div>
-        <div style="font-size:13px;color:#6B5043;line-height:1.7;margin-bottom:10px;">{safe_preview}</div>
+        <div style="font-size:13px;color:#6B5043;line-height:1.7;margin-bottom:10px;">{display_preview}</div>
         {tags_section}
     </div>
     """
@@ -463,6 +474,30 @@ def check_password():
 if not check_password():
     st.stop()
 
+# --- 翻訳関数 ---
+def translate_to_english(text):
+    if not text:
+        return text
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+    try:
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "You are a translator. Translate the following Japanese text to natural English. Return only the translated text, nothing else."},
+                {"role": "user", "content": text}
+            ],
+            max_tokens=1000
+        )
+        return response.choices[0].message.content.strip()
+    except:
+        return text
+
+def t(text):
+    """テキストを現在の言語に応じて返す"""
+    if st.session_state.get("lang") == "en":
+        return translate_to_english(text)
+    return text
+
 # --- サイドバーメニュー ---
 with st.sidebar:
     try:
@@ -472,12 +507,31 @@ with st.sidebar:
     st.markdown('<div style="font-family:Georgia,serif;font-size:16px;font-weight:500;color:#3D2B1F;margin-bottom:4px;">こころのあいだ</div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size:11px;color:#9C7B6A;margin-bottom:16px;">こころのあいだを、ことばにする。</div>', unsafe_allow_html=True)
     st.markdown('<hr style="border:none;border-top:1px dashed #D9C4B0;margin:8px 0 16px 0;">', unsafe_allow_html=True)
+
+    # 言語切り替え
+    if "lang" not in st.session_state:
+        st.session_state.lang = "ja"
+    col_ja, col_en = st.columns(2)
+    with col_ja:
+        if st.button("日本語", use_container_width=True, key="lang_ja",
+                     type="primary" if st.session_state.lang == "ja" else "secondary"):
+            st.session_state.lang = "ja"
+            st.rerun()
+    with col_en:
+        if st.button("English", use_container_width=True, key="lang_en",
+                     type="primary" if st.session_state.lang == "en" else "secondary"):
+            st.session_state.lang = "en"
+            st.rerun()
+
+    st.markdown('<hr style="border:none;border-top:1px dashed #D9C4B0;margin:12px 0;">', unsafe_allow_html=True)
+
+    is_en = st.session_state.get("lang") == "en"
     menu_items = [
-        ("ホーム", "home"),
-        ("はじめに", "about"),
-        ("使い方ガイド", "guide"),
-        ("プライバシーについて", "privacy"),
-        ("よくある質問", "faq"),
+        ("Home" if is_en else "ホーム", "home"),
+        ("About" if is_en else "はじめに", "about"),
+        ("How to Use" if is_en else "使い方ガイド", "guide"),
+        ("Privacy" if is_en else "プライバシーについて", "privacy"),
+        ("FAQ" if is_en else "よくある質問", "faq"),
     ]
     for label, view_name in menu_items:
         if st.button(label, key=f"menu_{view_name}", use_container_width=True):
@@ -680,13 +734,16 @@ elif st.session_state.view == "faq":
 # 画面: ホーム
 # =============================
 elif st.session_state.view == "home":
+    is_en = st.session_state.get("lang") == "en"
     try:
         col_logo, col_title = st.columns([1, 4])
         with col_logo:
             st.markdown("""<style>[data-testid="stImage"] img { background-color: #FAF7F2 !important; border-radius: 12px; }</style>""", unsafe_allow_html=True)
             st.image("images/logo.png", width=100)
         with col_title:
-            st.markdown(f"""<div style="display:flex; flex-direction:column; justify-content:flex-end; height:100%; padding-left:4px; margin-top:38px;"><div class="app-title">こころのあいだ</div><div class="app-caption">こころのあいだを、ことばにする。</div></div>""", unsafe_allow_html=True)
+            title_text = "Kokoro no Aida" if is_en else "こころのあいだ"
+            caption_text = "Putting words to what lies between hearts." if is_en else "こころのあいだを、ことばにする。"
+            st.markdown(f"""<div style="display:flex; flex-direction:column; justify-content:flex-end; height:100%; padding-left:4px; margin-top:38px;"><div class="app-title">{title_text}</div><div class="app-caption">{caption_text}</div></div>""", unsafe_allow_html=True)
     except:
         st.markdown('<div class="app-title">こころのあいだ</div>', unsafe_allow_html=True)
         st.markdown('<div class="app-caption">こころのあいだを、ことばにする。</div>', unsafe_allow_html=True)
@@ -705,11 +762,13 @@ elif st.session_state.view == "home":
 
     col_nav1, col_nav2 = st.columns([1, 1])
     with col_nav1:
-        if st.button("こころを書き出す", use_container_width=True, key="nav_create", type="primary"):
+        btn_write = "Write Your Heart" if is_en else "こころを書き出す"
+        if st.button(btn_write, use_container_width=True, key="nav_create", type="primary"):
             st.session_state.view = "create"
             st.rerun()
     with col_nav2:
-        if st.button("マイページ", use_container_width=True, key="nav_mypage", type="primary"):
+        btn_my = "My Page" if is_en else "マイページ"
+        if st.button(btn_my, use_container_width=True, key="nav_mypage", type="primary"):
             st.session_state.view = "mypage"
             st.rerun()
 
