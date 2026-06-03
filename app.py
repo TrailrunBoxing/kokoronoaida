@@ -1127,18 +1127,34 @@ elif st.session_state.view == "detail":
                 st.session_state.view = "confirm_delete"
                 st.rerun()
 
-    anon_badge = '<span class="badge-anon">匿名</span>' if post.get('isAnonymous') else ''
+    is_en = st.session_state.get("lang") == "en"
+    anon_badge = '<span class="badge-anon">Anonymous</span>' if (post.get('isAnonymous') and is_en) else ('<span class="badge-anon">匿名</span>' if post.get('isAnonymous') else '')
     author_text = f'<span style="font-size:12px;color:#9C7B6A;margin-left:4px;">{post.get("author","")}</span>' if post.get("author") and not post.get("isAnonymous") else ''
 
-    st.markdown(f'<div class="section-header">{post["title"]}{anon_badge}{author_text}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div style="font-size:13px;color:#B07050;margin-bottom:12px;">{post["theme"]} &nbsp;·&nbsp; {post["position"]} &nbsp;·&nbsp; {post["createdAt"]}</div>', unsafe_allow_html=True)
+    display_title = translate_to_english(post["title"]) if is_en else post["title"]
+    display_position = ("Parent" if post["position"] == "親" else "Child") if is_en else post["position"]
+    display_what = translate_to_english(post["whatHappened"]) if is_en else post["whatHappened"]
+    display_felt = translate_to_english(post["howFelt"]) if is_en else post["howFelt"]
+    display_wanted = translate_to_english(post.get("reallyWanted","")) if is_en else post.get("reallyWanted","")
+    display_hardest = translate_to_english(post.get("hardestMoment","")) if is_en else post.get("hardestMoment","")
 
-    st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">何があったか</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{post["whatHappened"]}</div></div>', unsafe_allow_html=True)
-    st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #C4A882;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">どう感じたか</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{post["howFelt"]}</div></div>', unsafe_allow_html=True)
+    label_what = "What happened" if is_en else "何があったか"
+    label_felt = "How I felt" if is_en else "どう感じたか"
+    label_wanted = "What I really wanted" if is_en else "本当はどうしてほしかったか"
+    label_hardest = "The hardest moment" if is_en else "一番つらかった瞬間"
+    btn_ai = "Reflect with AI" if is_en else "AIと見つめ直す"
+    spinner_msg = "Weaving words..." if is_en else "言葉を紡いでいます..."
+    chat_intro = "Analysis complete. Feel free to ask anything." if is_en else "分析が終わりました。気になること、もっと深めたいこと、何でも話しかけてみてください。一緒に考えます。"
+
+    st.markdown(f'<div class="section-header">{display_title}{anon_badge}{author_text}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="font-size:13px;color:#B07050;margin-bottom:12px;">{post["theme"]} &nbsp;·&nbsp; {display_position} &nbsp;·&nbsp; {post["createdAt"]}</div>', unsafe_allow_html=True)
+
+    st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">{label_what}</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{display_what}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #C4A882;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">{label_felt}</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{display_felt}</div></div>', unsafe_allow_html=True)
     if post.get('reallyWanted'):
-        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #D9B8A0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">本当はどうしてほしかったか</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{post["reallyWanted"]}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #D9B8A0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">{label_wanted}</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{display_wanted}</div></div>', unsafe_allow_html=True)
     if post.get('hardestMoment'):
-        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #D9B8A0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">一番つらかった瞬間</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{post["hardestMoment"]}</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-left:4px solid #D9B8A0;border-radius:12px;padding:16px;margin-bottom:10px;"><div style="font-size:12px;color:#9C7B6A;margin-bottom:4px;">{label_hardest}</div><div style="font-size:14px;color:#3D2B1F;line-height:1.7;">{display_hardest}</div></div>', unsafe_allow_html=True)
 
     st.markdown('<hr class="divider">', unsafe_allow_html=True)
 
@@ -1148,39 +1164,41 @@ elif st.session_state.view == "detail":
         st.session_state.chat_history = []
 
     if st.session_state.analysis_result is None:
-        if st.button("AIと見つめ直す"):
-            with st.spinner("言葉を紡いでいます..."):
+        if st.button(btn_ai):
+            with st.spinner(spinner_msg):
                 result = analyze_post(post)
                 if "error" in result:
                     st.error(f"分析に失敗しました: {result['error']}")
                 else:
                     st.session_state.analysis_result = result
-                    st.session_state.chat_history = [{"role": "assistant", "content": "分析が終わりました。気になること、もっと深めたいこと、何でも話しかけてみてください。一緒に考えます。"}]
+                    st.session_state.chat_history = [{"role": "assistant", "content": chat_intro}]
                     st.rerun()
 
     if st.session_state.analysis_result:
         result = st.session_state.analysis_result
         # 1. あなたの気持ちを受け止める
+        lbl_your = "Your Feelings" if is_en else "あなたの気持ち"
+        lbl_hidden = "What You Really Feel" if is_en else "奥にある本当の気持ち"
+        lbl_other = "Why the Other Person Did That" if is_en else "相手はなぜそうしたのか"
+        lbl_how = "Try Saying This" if is_en else "次にこう話しかけてみましょう"
+        lbl_hints = "What You Can Do Now" if is_en else "今すぐできること"
+
         if result.get("your_feelings"):
-            st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-left:4px solid #E8A87C;border-radius:12px;padding:18px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:8px;">あなたの気持ち</div><div style="font-size:15px;color:#4A2C1A;line-height:1.9;">{result.get("your_feelings","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFF5EE;border:1.5px solid #F0CDB0;border-left:4px solid #E8A87C;border-radius:12px;padding:18px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:8px;">{lbl_your}</div><div style="font-size:15px;color:#4A2C1A;line-height:1.9;">{result.get("your_feelings","")}</div></div>', unsafe_allow_html=True)
 
-        # 2. 本当の気持ち
         if result.get("hidden_feelings"):
-            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">奥にある本当の気持ち</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">{lbl_hidden}</div><div style="font-size:14px;color:#4A2C1A;line-height:1.7;">{result.get("hidden_feelings","")}</div></div>', unsafe_allow_html=True)
 
-        # 3. 相手の立場
         if result.get("other_perspective"):
-            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">相手はなぜそうしたのか</div><div style="font-size:14px;color:#3D2B5A;line-height:1.7;">{result.get("other_perspective","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#F5F0FF;border:1.5px solid #D8C8F0;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#5A3E8A;margin-bottom:6px;">{lbl_other}</div><div style="font-size:14px;color:#3D2B5A;line-height:1.7;">{result.get("other_perspective","")}</div></div>', unsafe_allow_html=True)
 
-        # 4. 次にこう話しかけてみましょう
         if result.get("how_to_talk"):
-            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">次にこう話しかけてみましょう</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{result.get("how_to_talk","")}</div></div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFF8F0;border:1.5px solid #F0D0A0;border-left:4px solid #E8A87C;border-radius:12px;padding:16px;margin-bottom:12px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:6px;">{lbl_how}</div><div style="font-size:14px;color:#4A2C1A;line-height:1.9;">{result.get("how_to_talk","")}</div></div>', unsafe_allow_html=True)
 
-        # 5. 今すぐできること
         hints = result.get('actionable_hints', [])
         if hints:
             hints_html = ''.join([f'<div style="display:flex;gap:8px;margin-bottom:8px;"><span style="color:#E8A87C;font-weight:500;">·</span><span style="font-size:14px;color:#4A2C1A;line-height:1.7;">{h}</span></div>' for h in hints])
-            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:4px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">今すぐできること</div>{hints_html}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="background:#FFFDF8;border:1.5px solid #E8D8C4;border-radius:12px;padding:16px;margin-top:4px;"><div style="font-size:13px;font-weight:500;color:#3D2B1F;margin-bottom:10px;">{lbl_hints}</div>{hints_html}</div>', unsafe_allow_html=True)
 
         st.markdown('<hr class="divider">', unsafe_allow_html=True)
         st.markdown('<div style="font-size:15px;font-weight:500;color:#3D2B1F;margin-bottom:4px;">AIとさらに話してみる</div>', unsafe_allow_html=True)
