@@ -625,7 +625,7 @@ if st.session_state.view == "about":
     """, unsafe_allow_html=True)
     else:
         st.markdown('<div class="section-header">はじめに・このアプリについて</div>', unsafe_allow_html=True)
-    st.markdown("""
+        st.markdown("""
     <div class="concept-card" style="border-left:4px solid #E8A87C;">
         <div class="concept-title">このアプリで書いてほしいこと</div>
         <div class="concept-body">
@@ -730,7 +730,7 @@ elif st.session_state.view == "guide":
     """, unsafe_allow_html=True)
     else:
         st.markdown('<div class="section-header">使い方ガイド</div>', unsafe_allow_html=True)
-    st.markdown("""
+        st.markdown("""
     <div class="concept-card">
         <div class="concept-title">基本の使い方（3ステップ）</div>
         <div class="step-row"><div class="step-num">1</div><div class="step-text"><strong style="color:#3D2B1F;">こころを書き出す</strong><br>何があったか（事実）と、どう感じたか（感情）を書きます。うまく書けなくても大丈夫。思いつくままに。</div></div>
@@ -815,7 +815,7 @@ elif st.session_state.view == "privacy":
     """, unsafe_allow_html=True)
     else:
         st.markdown('<div class="section-header">プライバシーについて</div>', unsafe_allow_html=True)
-    st.markdown("""
+        st.markdown("""
     <div class="concept-card">
         <div class="concept-title">取得する情報</div>
         <div class="concept-body">
@@ -875,6 +875,7 @@ elif st.session_state.view == "faq":
     else:
         st.markdown('<div class="section-header">よくある質問</div>', unsafe_allow_html=True)
         faqs = [
+
         ("投稿は他の人に見られますか？", "現在このアプリはトップページにすべての投稿が表示される仕様です。匿名モードを使うと名前は表示されません。気になる方は匿名での投稿をおすすめします。"),
         ("ブラウザを閉じたら投稿は消えますか？", "投稿はデータベースに保存されるため、ブラウザを閉じても消えません。ただし「マイページ」は端末IDで管理しているため、別のブラウザや端末では表示されないことがあります。"),
         ("AIは本物のカウンセラーですか？", "AIはカウンセラーではありません。気持ちの整理を手助けするツールです。深刻な悩みについては、専門家への相談をおすすめします。"),
